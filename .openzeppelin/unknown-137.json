@@ -1,0 +1,751 @@
+{
+  "manifestVersion": "3.2",
+  "admin": {
+    "address": "0x1210034a2Ca6e3B7AE2D22DeDb8b05694C80Ba9d",
+    "txHash": "0xb4c528b86ae4845d8376b39f3af487eba1281ee224e12ecf2fbd09ce36c46a3c"
+  },
+  "proxies": [
+    {
+      "address": "0x55b22f241005B1d89A09fE334A3Ec7282ed46440",
+      "txHash": "0xf76573d494f4979bae019cb67e646cdb3844b895a6ec8c379686bfc3f79c1086",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x59b2E78f0716d2d7FBF3d3EAD2B6ff11cDFc97f5",
+      "txHash": "0x25a79399e5598d313a55435cff6d59d1bd4abc5ca4a2f3ba5d488ed5b1d6a895",
+      "kind": "transparent"
+    }
+  ],
+  "impls": {
+    "02b477da3996ab37bc76451e536668dffdf727509de4b8958804afb7b3b98098": {
+      "address": "0xc64385E25619F045D88004fB52001114F4c1D548",
+      "txHash": "0xc471431c11aa64c2ef3b980c0b9456bb2a3a98d3a5a31ecc623646ef29f0ca37",
+      "layout": {
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:39"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:44"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\utils\\ContextUpgradeable.sol:36"
+          },
+          {
+            "label": "_owner",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_address",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:22"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "52",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:87"
+          },
+          {
+            "label": "KLIMAMCO2Router",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_address",
+            "contract": "InitTreasury",
+            "src": "contracts\\InitTreasury.sol:496"
+          },
+          {
+            "label": "USDCMCO2Router",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_address",
+            "contract": "InitTreasury",
+            "src": "contracts\\InitTreasury.sol:500"
+          },
+          {
+            "label": "KLIMAMCO2",
+            "offset": 0,
+            "slot": "103",
+            "type": "t_address",
+            "contract": "InitTreasury",
+            "src": "contracts\\InitTreasury.sol:504"
+          },
+          {
+            "label": "MCO2USDC",
+            "offset": 0,
+            "slot": "104",
+            "type": "t_address",
+            "contract": "InitTreasury",
+            "src": "contracts\\InitTreasury.sol:508"
+          },
+          {
+            "label": "MCO2",
+            "offset": 0,
+            "slot": "105",
+            "type": "t_address",
+            "contract": "InitTreasury",
+            "src": "contracts\\InitTreasury.sol:512"
+          },
+          {
+            "label": "USDC",
+            "offset": 0,
+            "slot": "106",
+            "type": "t_address",
+            "contract": "InitTreasury",
+            "src": "contracts\\InitTreasury.sol:516"
+          },
+          {
+            "label": "KLIMA",
+            "offset": 0,
+            "slot": "107",
+            "type": "t_address",
+            "contract": "InitTreasury",
+            "src": "contracts\\InitTreasury.sol:521"
+          },
+          {
+            "label": "sKLIMA",
+            "offset": 0,
+            "slot": "108",
+            "type": "t_address",
+            "contract": "InitTreasury",
+            "src": "contracts\\InitTreasury.sol:525"
+          },
+          {
+            "label": "staking",
+            "offset": 0,
+            "slot": "109",
+            "type": "t_address",
+            "contract": "InitTreasury",
+            "src": "contracts\\InitTreasury.sol:529"
+          },
+          {
+            "label": "MCO2BondContract",
+            "offset": 0,
+            "slot": "110",
+            "type": "t_address",
+            "contract": "InitTreasury",
+            "src": "contracts\\InitTreasury.sol:533"
+          },
+          {
+            "label": "MCO2USDCSlippage",
+            "offset": 0,
+            "slot": "111",
+            "type": "t_uint256",
+            "contract": "InitTreasury",
+            "src": "contracts\\InitTreasury.sol:538"
+          },
+          {
+            "label": "bondSlippage",
+            "offset": 0,
+            "slot": "112",
+            "type": "t_uint256",
+            "contract": "InitTreasury",
+            "src": "contracts\\InitTreasury.sol:542"
+          },
+          {
+            "label": "nextKlimaPayout",
+            "offset": 0,
+            "slot": "113",
+            "type": "t_uint256",
+            "contract": "InitTreasury",
+            "src": "contracts\\InitTreasury.sol:546"
+          },
+          {
+            "label": "USDCBondReserve",
+            "offset": 0,
+            "slot": "114",
+            "type": "t_uint256",
+            "contract": "InitTreasury",
+            "src": "contracts\\InitTreasury.sol:547"
+          },
+          {
+            "label": "FreeUSDCReserve",
+            "offset": 0,
+            "slot": "115",
+            "type": "t_uint256",
+            "contract": "InitTreasury",
+            "src": "contracts\\InitTreasury.sol:548"
+          },
+          {
+            "label": "CumulativeFreeUSDCReserves",
+            "offset": 0,
+            "slot": "116",
+            "type": "t_uint256",
+            "contract": "InitTreasury",
+            "src": "contracts\\InitTreasury.sol:549"
+          },
+          {
+            "label": "StdWdlPcg",
+            "offset": 0,
+            "slot": "117",
+            "type": "t_uint256",
+            "contract": "InitTreasury",
+            "src": "contracts\\InitTreasury.sol:550"
+          },
+          {
+            "label": "PercentToBond",
+            "offset": 0,
+            "slot": "118",
+            "type": "t_uint256",
+            "contract": "InitTreasury",
+            "src": "contracts\\InitTreasury.sol:554"
+          },
+          {
+            "label": "minPercentToRedeem",
+            "offset": 0,
+            "slot": "119",
+            "type": "t_uint256",
+            "contract": "InitTreasury",
+            "src": "contracts\\InitTreasury.sol:558"
+          },
+          {
+            "label": "sKLIMAReserve",
+            "offset": 0,
+            "slot": "120",
+            "type": "t_uint256",
+            "contract": "InitTreasury",
+            "src": "contracts\\InitTreasury.sol:562"
+          },
+          {
+            "label": "MCO2Reserve",
+            "offset": 0,
+            "slot": "121",
+            "type": "t_uint256",
+            "contract": "InitTreasury",
+            "src": "contracts\\InitTreasury.sol:563"
+          },
+          {
+            "label": "minBondDiscount",
+            "offset": 0,
+            "slot": "122",
+            "type": "t_uint256",
+            "contract": "InitTreasury",
+            "src": "contracts\\InitTreasury.sol:564"
+          },
+          {
+            "label": "bondPrice",
+            "offset": 0,
+            "slot": "123",
+            "type": "t_uint256",
+            "contract": "InitTreasury",
+            "src": "contracts\\InitTreasury.sol:568"
+          },
+          {
+            "label": "swapPrice",
+            "offset": 0,
+            "slot": "124",
+            "type": "t_uint256",
+            "contract": "InitTreasury",
+            "src": "contracts\\InitTreasury.sol:569"
+          },
+          {
+            "label": "bondDiscount",
+            "offset": 0,
+            "slot": "125",
+            "type": "t_uint256",
+            "contract": "InitTreasury",
+            "src": "contracts\\InitTreasury.sol:570"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          }
+        }
+      }
+    },
+    "96382df00799a578f6e2693714a8c5362d901fac79838dde3f65ec0053ef20d2": {
+      "address": "0x178d713BB61DA14D6a7E2CbBc8B9E396dEd9f897",
+      "txHash": "0x0e4a21c8f5dc234583a5c7f89213da1278d7ca0f9aa815a3550d35709410b9aa",
+      "layout": {
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:39"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:44"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\utils\\ContextUpgradeable.sol:36"
+          },
+          {
+            "label": "_owner",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_address",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:22"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "52",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:87"
+          },
+          {
+            "label": "Aggregator",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_address",
+            "contract": "InitRetirements",
+            "src": "contracts\\InitRetirements.sol:450"
+          },
+          {
+            "label": "wMaticUSDCRouter",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_address",
+            "contract": "InitRetirements",
+            "src": "contracts\\InitRetirements.sol:454"
+          },
+          {
+            "label": "USDCKLIMARouter",
+            "offset": 0,
+            "slot": "103",
+            "type": "t_address",
+            "contract": "InitRetirements",
+            "src": "contracts\\InitRetirements.sol:458"
+          },
+          {
+            "label": "KLIMAUSDC",
+            "offset": 0,
+            "slot": "104",
+            "type": "t_address",
+            "contract": "InitRetirements",
+            "src": "contracts\\InitRetirements.sol:462"
+          },
+          {
+            "label": "USDC",
+            "offset": 0,
+            "slot": "105",
+            "type": "t_address",
+            "contract": "InitRetirements",
+            "src": "contracts\\InitRetirements.sol:466"
+          },
+          {
+            "label": "BCT",
+            "offset": 0,
+            "slot": "106",
+            "type": "t_address",
+            "contract": "InitRetirements",
+            "src": "contracts\\InitRetirements.sol:470"
+          },
+          {
+            "label": "KLIMA",
+            "offset": 0,
+            "slot": "107",
+            "type": "t_address",
+            "contract": "InitRetirements",
+            "src": "contracts\\InitRetirements.sol:474"
+          },
+          {
+            "label": "sKLIMA",
+            "offset": 0,
+            "slot": "108",
+            "type": "t_address",
+            "contract": "InitRetirements",
+            "src": "contracts\\InitRetirements.sol:478"
+          },
+          {
+            "label": "arKLIMA",
+            "offset": 0,
+            "slot": "109",
+            "type": "t_address",
+            "contract": "InitRetirements",
+            "src": "contracts\\InitRetirements.sol:482"
+          },
+          {
+            "label": "treasurer",
+            "offset": 0,
+            "slot": "110",
+            "type": "t_address",
+            "contract": "InitRetirements",
+            "src": "contracts\\InitRetirements.sol:486"
+          },
+          {
+            "label": "staking",
+            "offset": 0,
+            "slot": "111",
+            "type": "t_address",
+            "contract": "InitRetirements",
+            "src": "contracts\\InitRetirements.sol:490"
+          },
+          {
+            "label": "slippageFactor",
+            "offset": 0,
+            "slot": "112",
+            "type": "t_uint256",
+            "contract": "InitRetirements",
+            "src": "contracts\\InitRetirements.sol:494"
+          },
+          {
+            "label": "retireBCTPercent",
+            "offset": 0,
+            "slot": "113",
+            "type": "t_uint256",
+            "contract": "InitRetirements",
+            "src": "contracts\\InitRetirements.sol:498"
+          },
+          {
+            "label": "stakeInKIPercent",
+            "offset": 0,
+            "slot": "114",
+            "type": "t_uint256",
+            "contract": "InitRetirements",
+            "src": "contracts\\InitRetirements.sol:502"
+          },
+          {
+            "label": "percentFundsReceived",
+            "offset": 0,
+            "slot": "115",
+            "type": "t_uint256",
+            "contract": "InitRetirements",
+            "src": "contracts\\InitRetirements.sol:506"
+          },
+          {
+            "label": "USDCFromSwap",
+            "offset": 0,
+            "slot": "116",
+            "type": "t_uint256",
+            "contract": "InitRetirements",
+            "src": "contracts\\InitRetirements.sol:510"
+          },
+          {
+            "label": "KLIMAFromSwap",
+            "offset": 0,
+            "slot": "117",
+            "type": "t_uint256",
+            "contract": "InitRetirements",
+            "src": "contracts\\InitRetirements.sol:511"
+          },
+          {
+            "label": "amtLastStaked",
+            "offset": 0,
+            "slot": "118",
+            "type": "t_uint256",
+            "contract": "InitRetirements",
+            "src": "contracts\\InitRetirements.sol:512"
+          },
+          {
+            "label": "amtLastWrapped",
+            "offset": 0,
+            "slot": "119",
+            "type": "t_uint256",
+            "contract": "InitRetirements",
+            "src": "contracts\\InitRetirements.sol:513"
+          },
+          {
+            "label": "arKLIMABalance",
+            "offset": 0,
+            "slot": "120",
+            "type": "t_uint256",
+            "contract": "InitRetirements",
+            "src": "contracts\\InitRetirements.sol:514"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          }
+        }
+      }
+    },
+    "36751307887ddef0c5fd9722012b88cb4daff23acecb2dc417ca4fed5e92604d": {
+      "address": "0xf2B6CeCC21EB896492027405d0851980c23899e1",
+      "txHash": "0x294960adbed5b8b9c01de164204f69e350160bf54b0f95a48f87cd77da83bca1",
+      "layout": {
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:39"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:44"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\utils\\ContextUpgradeable.sol:36"
+          },
+          {
+            "label": "_owner",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_address",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:22"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "52",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:87"
+          },
+          {
+            "label": "Aggregator",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_address",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:440"
+          },
+          {
+            "label": "wMaticUSDCRouter",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_address",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:444"
+          },
+          {
+            "label": "USDCKLIMARouter",
+            "offset": 0,
+            "slot": "103",
+            "type": "t_address",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:448"
+          },
+          {
+            "label": "KLIMAUSDC",
+            "offset": 0,
+            "slot": "104",
+            "type": "t_address",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:452"
+          },
+          {
+            "label": "USDC",
+            "offset": 0,
+            "slot": "105",
+            "type": "t_address",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:456"
+          },
+          {
+            "label": "BCT",
+            "offset": 0,
+            "slot": "106",
+            "type": "t_address",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:460"
+          },
+          {
+            "label": "KLIMA",
+            "offset": 0,
+            "slot": "107",
+            "type": "t_address",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:464"
+          },
+          {
+            "label": "sKLIMA",
+            "offset": 0,
+            "slot": "108",
+            "type": "t_address",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:468"
+          },
+          {
+            "label": "arKLIMA",
+            "offset": 0,
+            "slot": "109",
+            "type": "t_address",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:472"
+          },
+          {
+            "label": "treasurer",
+            "offset": 0,
+            "slot": "110",
+            "type": "t_address",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:476"
+          },
+          {
+            "label": "staking",
+            "offset": 0,
+            "slot": "111",
+            "type": "t_address",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:480"
+          },
+          {
+            "label": "slippageFactor",
+            "offset": 0,
+            "slot": "112",
+            "type": "t_uint256",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:484"
+          },
+          {
+            "label": "retireBCTPercent",
+            "offset": 0,
+            "slot": "113",
+            "type": "t_uint256",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:488"
+          },
+          {
+            "label": "stakeInKIPercent",
+            "offset": 0,
+            "slot": "114",
+            "type": "t_uint256",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:492"
+          },
+          {
+            "label": "percentFundsReceived",
+            "offset": 0,
+            "slot": "115",
+            "type": "t_uint256",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:496"
+          },
+          {
+            "label": "USDCFromSwap",
+            "offset": 0,
+            "slot": "116",
+            "type": "t_uint256",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:500"
+          },
+          {
+            "label": "KLIMAFromSwap",
+            "offset": 0,
+            "slot": "117",
+            "type": "t_uint256",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:501"
+          },
+          {
+            "label": "amtLastStaked",
+            "offset": 0,
+            "slot": "118",
+            "type": "t_uint256",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:502"
+          },
+          {
+            "label": "amtLastWrapped",
+            "offset": 0,
+            "slot": "119",
+            "type": "t_uint256",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:503"
+          },
+          {
+            "label": "arKLIMABalance",
+            "offset": 0,
+            "slot": "120",
+            "type": "t_uint256",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:504"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          }
+        }
+      }
+    }
+  }
+}
