@@ -146,28 +146,38 @@ contract KNS_Retirer is Initializable, OwnableUpgradeable {
     
     // PUBLIC
 
-    function retireAndKI( uint _USDCAmt ) public {
+    function retireAndKI(
+        uint _USDCAmt,
+        address beneficiary, 
+        string memory domainName
+    ) public {
         require(
             ( _USDCAmt >= 1*(10**6) ), 
             "Payment net of royalties and referrals is less than 1 USDC."
         );
 
         IERC20(USDC).transferFrom(msg.sender, address(this), _USDCAmt);
-        retireBCT((_USDCAmt * retireBCTPercent) / percentFundsReceived );
+
+        retireBCT(
+            (_USDCAmt * retireBCTPercent) / percentFundsReceived,
+            beneficiary,
+            domainName
+        );
+        
         stakeinKI ((_USDCAmt * stakeInKIPercent) / percentFundsReceived );
         
-        //Check balance after retirement and allocation to auto-retirement KLIMA.
-        uint256 leftoverFunds = IERC20(USDC).balanceOf(address(this));
-        
-        IERC20(USDC).approve(treasurer, leftoverFunds);
-        IERC20(USDC).transferFrom(address(this), treasurer, leftoverFunds);
-
+        // transfer the remaining USDC to the treasury address
+        IERC20(USDC).transfer(treasurer, IERC20(USDC).balanceOf(address(this)));
     }
 
     // PRIVATE
 
     //Retires BCT via Klima DAO's Klima Infinity retirement aggregator.
-    function retireBCT(uint _retireAmt) private {
+    function retireBCT(
+        uint _retireAmt, 
+        address beneficiary, 
+        string memory domainName
+    ) private {
         IRetire KI_Retirer = IRetire(Aggregator);
         IERC20(USDC).approve(Aggregator, _retireAmt);
         KI_Retirer.retireCarbon(
@@ -175,9 +185,9 @@ contract KNS_Retirer is Initializable, OwnableUpgradeable {
             BCT,
             _retireAmt,
             false,
-            msg.sender,
-            "KNS Domains",
-            "Go green and stay green."
+            beneficiary,
+            domainName,
+            "I helped the environment by minting a .klima domain. Go green and stay green!"
         );
 
     }
@@ -224,19 +234,19 @@ contract KNS_Retirer is Initializable, OwnableUpgradeable {
         require(KlimaAmt > 0, "Didn't process swap to klima properly");
     }
 
-    function _stakeKLIMA() private returns ( uint _stakedAmt) {
-        uint AmounttoStake = IERC20(KLIMA).balanceOf(address(this));
-        IERC20(KLIMA).approve(staking, AmounttoStake);
-        IStaking(staking).stake(AmounttoStake, address(this));
+    function _stakeKLIMA() private returns (uint) {
+        uint amountToStake = IERC20(KLIMA).balanceOf(address(this));
+        IERC20(KLIMA).approve(staking, amountToStake);
+        IStaking(staking).stake(amountToStake, address(this));
         IStaking(staking).claim(address(this));
-        _stakedAmt =AmounttoStake;
+        return amountToStake;
     }
     
 
-    function _wrapArKLIMA() private returns (uint _wrapAmt) {
-        uint AmountToWrap = IERC20(sKLIMA).balanceOf(address(this));
-        IERC20(sKLIMA).approve(arKLIMA, AmountToWrap);
-        _wrapAmt = IarKLIMA(arKLIMA).wrap(AmountToWrap);
+    function _wrapArKLIMA() private returns (uint) {
+        uint amountToWrap = IERC20(sKLIMA).balanceOf(address(this));
+        IERC20(sKLIMA).approve(arKLIMA, amountToWrap);
+        return IarKLIMA(arKLIMA).wrap(amountToWrap);
     }
 
     // RECEIVE & FALLBACK
