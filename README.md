@@ -42,18 +42,27 @@ Converting to BCT and retiring carbon offsets is the base value proposition for 
 
 
 Tokenomics:
+
 With referal:
+
 Executed by normal contract
+
 10% -> Referee - Contract owner can edit this percentage ONLY through gorvernance.
+
 20% -> punkdomains (Fixed can not be edited, receiver wallet address can be changed but requires multisig from punkdomain and contract owner).
-2% -> Sent to gas Wallet to cover fees. (Tentative - may be best handled directly by Paymaster contract in GSNV2 implementation)
+
+2% -> Sent to gas Wallet to cover fees. (Tentative - may be best handled directly by Paymaster contract if GSNV2 implementation)
 
 Both will be the executed with the Klima Infinity contract.
+
 (Remainder - roughly 70-68%)
+
 5% -> converted to BCT and retired using klimadomain retirement address.(There will be a dedicated contract address for klima domain retiring. So we can track the avearage retired carbon tonne each klima domain has).
+
 5% -> converted to sKLIMA and wrapped into auto retirement KLIMA (arKLIMA) for enrolling into Klima Infnity. Commits 1/3 rebases of the to converting and retiring for BCT. (This contract was written by Chaz.) 
 
 To be executed by treasury contract.
+
 58% -> Sent to Treasury (Bond 30% to the treasury and redeem for sKLIMA, 70% retained as USDC for GWAMI Labs. (Fixed can not be editied and Contract owner can change receiver address). There is functionality included for simple limiting of withdrawals to preserve runway.
 
 
