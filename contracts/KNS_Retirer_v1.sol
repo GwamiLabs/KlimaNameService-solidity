@@ -37,7 +37,7 @@ contract KNS_Retirer is Initializable, OwnableUpgradeable {
     address public arKLIMA;
     address public treasurer;
     address public staking;
-    string public retirementMessage = "Climate Action can become the ONLY option and it starts with YOU. KNS Domains helps you go green, stay green and socially represent green. Visit www.kns.earth for more info.";
+    string public retirementMessage;
     uint public slippageFactor; // 500 bps = 5%
     uint public retireBctBps; // 500 bps = 5%
     uint public stakeInKIbps; // 500 bps = 5%
@@ -67,6 +67,7 @@ contract KNS_Retirer is Initializable, OwnableUpgradeable {
         arKLIMA = _arKLIMA;
         treasurer = _treasurer;
         staking = 0x25d28a24Ceb6F81015bB0b2007D795ACAc411b4d;
+        retirementMessage = "Climate Action can become the ONLY option and it starts with YOU. KNS Domains helps you go green, stay green and socially represent green. Visit www.kns.earth for more info.";
         slippageFactor = 500; // 500 bps = 5%
         retireBctBps = 500; // 500 bps = 5%
         stakeInKIbps = 500; // 500 bps = 5%
