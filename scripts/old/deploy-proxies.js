@@ -12,6 +12,14 @@ async function main() {
   console.log("Deploying contracts with the account:", deployer.address);
   console.log("Account balance:", (await deployer.getBalance()).toString());
 
+ /* Treasurer = await ethers.getContractFactory("InitTreasury", deployer);
+  treasurer = await upgrades.deployProxy(Treasurer, [], {
+    initializer: "initialize",
+  });
+  await treasurer.deployed();
+  console.log("treasurer proxy deployed to:", treasurer.address);
+  console.log("treasurer implementation deployed to:", Treasurer.address);
+*/
   const retirer_init = [
     ARKLIMA,
     "0x97fAFd95bc0A332aA6123A8f8f369dfc492ff1D0"//treasurer.address
@@ -25,8 +33,14 @@ async function main() {
   await retirer.deployed();
 
   console.log("Retirer proxy deployed to:", retirer.address);
+  console.log("Retirer implementation deployed to:", retirer.address);
   
   console.log("deployer address is: ", deployer.address);
+
+  //In case of any issues with initialization
+  //await retirer.initialize(ARKLIMA,
+  //                            "0x97fAFd95bc0A332aA6123A8f8f369dfc492ff1D0");//treasurer.address);
+  //await treasurer.initialize();
 
 }
 

@@ -14,6 +14,11 @@
       "address": "0x59b2E78f0716d2d7FBF3d3EAD2B6ff11cDFc97f5",
       "txHash": "0x25a79399e5598d313a55435cff6d59d1bd4abc5ca4a2f3ba5d488ed5b1d6a895",
       "kind": "transparent"
+    },
+    {
+      "address": "0xdc9297290bD0C429625b11A09Af0BE4429Bc89C7",
+      "txHash": "0x4bd38383d2943cbca03e0b1f9a90eef46f2aa9d3b951ba848ced9c6264efc6b3",
+      "kind": "transparent"
     }
   ],
   "impls": {
@@ -739,6 +744,240 @@
           "t_bool": {
             "label": "bool",
             "numberOfBytes": "1"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          }
+        }
+      }
+    },
+    "8a85b02c405fdd3505bdb0fdc6b522c915f17c78cc83537abc2d6f471355f106": {
+      "address": "0x7B7b2aF7Ce589d1fA8463486A2C3E19a0deb459d",
+      "txHash": "0x601a5d70ac1a6e28186c67db61ea2d6806625c03f36e66d807d1f9262c669e50",
+      "layout": {
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:39"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:44"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\utils\\ContextUpgradeable.sol:36"
+          },
+          {
+            "label": "_owner",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_address",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:22"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "52",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:87"
+          },
+          {
+            "label": "Aggregator",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_address",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:29"
+          },
+          {
+            "label": "USDCKLIMARouter",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_address",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:30"
+          },
+          {
+            "label": "KLIMAUSDC",
+            "offset": 0,
+            "slot": "103",
+            "type": "t_address",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:31"
+          },
+          {
+            "label": "USDC",
+            "offset": 0,
+            "slot": "104",
+            "type": "t_address",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:32"
+          },
+          {
+            "label": "BCT",
+            "offset": 0,
+            "slot": "105",
+            "type": "t_address",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:33"
+          },
+          {
+            "label": "KLIMA",
+            "offset": 0,
+            "slot": "106",
+            "type": "t_address",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:34"
+          },
+          {
+            "label": "sKLIMA",
+            "offset": 0,
+            "slot": "107",
+            "type": "t_address",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:35"
+          },
+          {
+            "label": "arKLIMA",
+            "offset": 0,
+            "slot": "108",
+            "type": "t_address",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:36"
+          },
+          {
+            "label": "treasurer",
+            "offset": 0,
+            "slot": "109",
+            "type": "t_address",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:37"
+          },
+          {
+            "label": "staking",
+            "offset": 0,
+            "slot": "110",
+            "type": "t_address",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:38"
+          },
+          {
+            "label": "retirementMessage",
+            "offset": 0,
+            "slot": "111",
+            "type": "t_string_storage",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:39"
+          },
+          {
+            "label": "slippageFactor",
+            "offset": 0,
+            "slot": "112",
+            "type": "t_uint256",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:40"
+          },
+          {
+            "label": "retireBctBps",
+            "offset": 0,
+            "slot": "113",
+            "type": "t_uint256",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:41"
+          },
+          {
+            "label": "stakeInKIbps",
+            "offset": 0,
+            "slot": "114",
+            "type": "t_uint256",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:42"
+          },
+          {
+            "label": "bpsFundsReceived",
+            "offset": 0,
+            "slot": "115",
+            "type": "t_uint256",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:43"
+          },
+          {
+            "label": "USDCFromSwap",
+            "offset": 0,
+            "slot": "116",
+            "type": "t_uint256",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:44"
+          },
+          {
+            "label": "KLIMAFromSwap",
+            "offset": 0,
+            "slot": "117",
+            "type": "t_uint256",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:45"
+          },
+          {
+            "label": "amtLastStaked",
+            "offset": 0,
+            "slot": "118",
+            "type": "t_uint256",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:46"
+          },
+          {
+            "label": "amtLastWrapped",
+            "offset": 0,
+            "slot": "119",
+            "type": "t_uint256",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:47"
+          },
+          {
+            "label": "arKLIMABalance",
+            "offset": 0,
+            "slot": "120",
+            "type": "t_uint256",
+            "contract": "KNS_Retirer",
+            "src": "contracts\\KNS_Retirer_v1.sol:48"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_string_storage": {
+            "label": "string",
+            "numberOfBytes": "32"
           },
           "t_uint256": {
             "label": "uint256",

@@ -27,7 +27,6 @@ contract KNS_Retirer is Initializable, OwnableUpgradeable {
     
     // STATE VARIABLES
     address public Aggregator;
-    address public wMaticUSDCRouter;
     address public USDCKLIMARouter;
     address public KLIMAUSDC;
     address public USDC;
@@ -57,7 +56,6 @@ contract KNS_Retirer is Initializable, OwnableUpgradeable {
         __Context_init_unchained();
         __Ownable_init_unchained();
         Aggregator = 0xEde3bd57a04960E6469B70B4863cE1c9d9363Cb8;
-        wMaticUSDCRouter = 0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506;
         USDCKLIMARouter = 0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506;
         KLIMAUSDC = 0x5786b267d35F9D011c4750e0B0bA584E1fDbeAD1;
         USDC = 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174;
@@ -78,10 +76,6 @@ contract KNS_Retirer is Initializable, OwnableUpgradeable {
 
     function set_Aggregator (address _aggregator) external onlyOwner {
         Aggregator = _aggregator;
-    }
-    
-    function set_wMaticUSDCRouter (address _router) external onlyOwner {
-        wMaticUSDCRouter = _router;
     }
     
     function set_USDCKLIMARouter (address _router) external onlyOwner {
