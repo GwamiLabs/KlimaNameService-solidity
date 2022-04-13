@@ -69,7 +69,7 @@ contract KNS_Retirer is Initializable, OwnableUpgradeable {
         slippageFactor = 500; // 500 bps = 5%
         retireBctBps = 500; // 500 bps = 5%
         stakeInKIbps = 500; // 500 bps = 5%
-        bpsFundsReceived = 7000; // 7000 bps = 70%
+        bpsFundsReceived = 7_000; // 7000 bps = 70%
     }
 
     // OWNER
@@ -159,8 +159,9 @@ contract KNS_Retirer is Initializable, OwnableUpgradeable {
 
     function retireAndKI(
         uint _USDCAmt,
-        address beneficiary, 
-        string memory domainName
+        address _beneficiary, 
+        string memory _domainName,
+        string memory _retMessage
     ) public {
         require(
             _USDCAmt >= 1*(10**6), 
@@ -169,10 +170,16 @@ contract KNS_Retirer is Initializable, OwnableUpgradeable {
 
         IERC20(USDC).transferFrom(msg.sender, address(this), _USDCAmt);
 
+        // if user did not add retirement message, use the default one
+        if (bytes(_retMessage).length == 0) {
+            _retMessage = retirementMessage;
+        }
+
         retireBCT(
             (_USDCAmt * retireBctBps) / bpsFundsReceived,
-            beneficiary,
-            domainName
+            _beneficiary,
+            _domainName,
+            _retMessage
         );
         
         stakeinKI((_USDCAmt * stakeInKIbps) / bpsFundsReceived);
@@ -186,8 +193,9 @@ contract KNS_Retirer is Initializable, OwnableUpgradeable {
     //Retires BCT via Klima DAO's Klima Infinity retirement aggregator.
     function retireBCT(
         uint _retireAmt, 
-        address beneficiary, 
-        string memory domainName
+        address _beneficiary, 
+        string memory _domainName,
+        string memory _retMessage
     ) private {
         IRetire KI_Retirer = IRetire(Aggregator);
         IERC20(USDC).approve(Aggregator, _retireAmt);
@@ -196,9 +204,9 @@ contract KNS_Retirer is Initializable, OwnableUpgradeable {
             BCT,
             _retireAmt,
             false,
-            beneficiary,
-            domainName,
-            retirementMessage
+            _beneficiary,
+            _domainName,
+            _retMessage
         );
     }
 
