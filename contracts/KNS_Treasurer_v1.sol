@@ -8,98 +8,47 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./interfaces/IStaking.sol";
 import "./interfaces/IUniswapV2Pair.sol";
 import "./interfaces/IUniswapV2Router02.sol";
-import "./interfaces/IarKLIMA.sol"; //may be removable
+import "./interfaces/IarKLIMA.sol";
 import "./interfaces/IBondDepo.sol";
-
 
 contract KNS_Treasurer is Initializable, OwnableUpgradeable{
 
     //EVENTS
-
+    event maticReceived( address indexed _sender, uint value );
+    event USDC_Received( uint value );
+    event MCO2_Bonded( uint value );
 
     //CONSTANTS
+    uint public constant MAX_BPS = 10_000; // 10000 bps = 100%
 
     //STATE VARIABLES
     address public KLIMAMCO2Router;
     address public USDCMCO2Router;
     address public KLIMAMCO2;
-
-
-    
-    function set_KLIMAMCO2Router (address _router) public onlyOwner {
-        KLIMAMCO2Router = _router;
-    }
-    
-    function set_USDCMCO2Router (address _router) public onlyOwner {
-        USDCMCO2Router = _router;
-    }
-    
-    function set_KLIMAMCO2 (address _pair) public onlyOwner {
-        KLIMAMCO2 = _pair;
-    }
     address public MCO2USDC;
-    function set_MCO2USDC (address _pair) public onlyOwner {
-        MCO2USDC = _pair;
-    }
     address public MCO2;
-    function set_MCO2 (address _token) public onlyOwner {
-        MCO2 = _token;
-    }
     address public USDC;
-    function set_USDC (address _token) public onlyOwner {
-        USDC = _token;
-    }
-
     address public KLIMA;
-    function set_KLIMA (address _token) public onlyOwner {
-        KLIMA = _token;
-    }
     address public sKLIMA;
-    function set_sKLIMA (address _token) public onlyOwner {
-        sKLIMA = _token;
-    }
     address public staking;
-    function set_staking (address _contract) public onlyOwner {
-        staking = _contract;
-    }
     address public MCO2BondContract;
-    function set_MCO2BondContract (address _bond) public onlyOwner {
-        MCO2BondContract = _bond;
-    } 
-
-    uint public MCO2USDCSlippage;
-    function set_MCO2USDCSlippage (uint _slippage) public onlyOwner {
-        MCO2USDCSlippage = _slippage;
-    }
-    uint public bondSlippage;
-    function set_bondSlippage (uint _slippage) public onlyOwner {
-        bondSlippage = _slippage;
-    }
+    uint public MCO2USDCSlippageBPS; // 500 bps = 5%
+    uint public bondSlippageBPS; // 500 bps = 5%
+    uint public StdWdlBPS; // 2000 bps = 20%
+    uint public BPSToBond; // 3000 bps = 30%
+    uint public minBPSToRedeem; // 5000 bps = 50%
+    uint public minBondDiscountBPS; // 80 bps = 0.8%
     uint public nextKlimaPayout;
     uint public USDCBondReserve;
     uint public FreeUSDCReserve;
-    uint public CumulativeFreeUSDCReserves;
-    uint public StdWdlPcg;
-    function set_StdWdlPcg (uint _percentage) public onlyOwner {
-        StdWdlPcg = _percentage;
-    }
-    uint public PercentToBond;
-    function set_PercentToBond (uint _percentage) public onlyOwner {
-        PercentToBond = _percentage;
-    }
-    uint public minPercentToRedeem;
-    function set_minPercentToRedeem (uint _percentage) public onlyOwner {
-        minPercentToRedeem = _percentage;
-    }
+    uint public CumulativeFreeUSDCReserves; 
     uint public sKLIMAReserve;
     uint public MCO2Reserve;
-    uint public minBondDiscount;
-    function set_minBondDiscount (uint _percentage) public onlyOwner {
-        minBondDiscount = _percentage;
-    }
     uint public bondPrice;
     uint public swapPrice;
-    uint public bondDiscount;
+    uint public bondDiscountBPS;
+    
+    // INITIALIZER
     
     function initialize()public initializer{
         __Context_init_unchained();
@@ -114,178 +63,80 @@ contract KNS_Treasurer is Initializable, OwnableUpgradeable{
         sKLIMA = 0xb0C22d8D350C67420f06F48936654f567C73E8C8;
         staking = 0x25d28a24Ceb6F81015bB0b2007D795ACAc411b4d;
         MCO2BondContract = 0x00Da51bC22edF9c5A643da7E232e5a811D10B8A3;
-        MCO2USDCSlippage = 50; //5%;
-        bondSlippage = 50; //5%;
-        StdWdlPcg = 200; //20%;
-        PercentToBond = 300; //30%;
-        minPercentToRedeem = 5000; //50%;
-        minBondDiscount= 80; //0.8%;
+        MCO2USDCSlippageBPS = 500; //5%;
+        bondSlippageBPS = 500; //5%;
+        StdWdlBPS = 2000; //20%;
+        BPSToBond = 3000; //30%;
+        minBPSToRedeem = 5000; //50%;
+        minBondDiscountBPS= 80; //0.8%;
 
     }
 
+    // OWNER
 
-    event maticReceived(address _sender, uint value );
-    receive() external payable {
-        emit maticReceived(msg.sender, msg.value);
+    function set_KLIMAMCO2Router (address _router) public onlyOwner {
+        KLIMAMCO2Router = _router;
+    }
+    
+    function set_USDCMCO2Router (address _router) public onlyOwner {
+        USDCMCO2Router = _router;
+    }
+    
+    function set_KLIMAMCO2 (address _pair) public onlyOwner {
+        KLIMAMCO2 = _pair;
+    }
+    
+    function set_MCO2USDC (address _pair) public onlyOwner {
+        MCO2USDC = _pair;
+    }
+    
+    function set_MCO2 (address _token) public onlyOwner {
+        MCO2 = _token;
+    }
+    
+    function set_USDC (address _token) public onlyOwner {
+        USDC = _token;
     }
 
-    function depositUSDC( uint _USDCAmt ) external {
-        IERC20(USDC).transferFrom(msg.sender, address(this), _USDCAmt);
-        //revert("We got up to line 535!");
-        rebalanceFunds();
-
+    function set_KLIMA (address _token) public onlyOwner {
+        KLIMA = _token;
     }
-
-
-    function rebalanceFunds() public {
-        uint USDCExcess = IERC20(USDC).balanceOf(address(this))
-                            - FreeUSDCReserve
-                            - USDCBondReserve;
-        if (USDCExcess > 1e7) {
-            FreeUSDCReserve += ( USDCExcess * (1000-PercentToBond) ) / 1000;
-            CumulativeFreeUSDCReserves += ( USDCExcess * (1000-PercentToBond) ) / 1000;
-            USDCBondReserve += (USDCExcess * PercentToBond) / 1000; // 100% = 1000
-        }
-        //revert("We got up to line 550!");
-        MCO2Reserve = IERC20(MCO2).balanceOf(address(this));
-        sKLIMAReserve = IERC20(sKLIMA).balanceOf(address(this));
-        uint KlimaAmt = IERC20(KLIMA).balanceOf(address(this));
-        //revert("We got up to line 554!");
-        if (KlimaAmt > 1e10 ){
-            stakeKlima();
-            sKLIMAReserve += KlimaAmt;
-            
-        }
-        bondingRun();
+    
+    function set_sKLIMA (address _token) public onlyOwner {
+        sKLIMA = _token;
     }
-
-    function bondingRun() private {
-
-        swapPrice = getSwapPrice();
-        bondPrice = getBondPrice();
-        
-        if ( bondPrice > swapPrice ) {
-            bondDiscount = 0;
-        } else {
-            bondDiscount = ((swapPrice - bondPrice) * 100) / swapPrice;
-        }
-        if (bondDiscount >= minBondDiscount) {
-            sKLIMAReserve += redeemBond();
-            if(USDCBondReserve > 1e7){
-                MCO2Reserve += swapToBondable(USDCBondReserve);
-                nextKlimaPayout = depositBond(MCO2Reserve);
-            }
-        }
-
-
+    
+    function set_staking (address _contract) public onlyOwner {
+        staking = _contract;
     }
-    /// @dev gets swap price in MCO2 per KLIMA, ,9 dec pts
-    function getSwapPrice() private view returns ( uint ) {
-        IUniswapV2Router02 KMRouter = IUniswapV2Router02(KLIMAMCO2Router);
-        address token0 = IUniswapV2Pair(KLIMAMCO2).token0();
-        address token1 = IUniswapV2Pair(KLIMAMCO2).token1();
+    
+    function set_MCO2BondContract (address _bond) public onlyOwner {
+        MCO2BondContract = _bond;
+    } 
 
-        address[] memory path = new address[](2);
-        if (token0 == KLIMA) {
-                    path[0] = token0;
-                    path[1] = token1;
-        } else {
-                    path[1] = token0;
-                    path[0] = token1;
-        }
-
-        uint256[] memory minOut 
-                    = KMRouter.getAmountsOut(1e9, path);
-        return minOut[minOut.length - 1];
-        
+    
+    function set_MCO2USDCSlippageBPS (uint _slippagebps) public onlyOwner {
+        MCO2USDCSlippageBPS = _slippagebps;
     }
-
-    /// @dev gets bond price in MCO2 per KLIMA,9 dec pts
-    function getBondPrice() private returns ( uint ){
-        return (IBondDepo( MCO2BondContract )
-                                .bondPrice() * 1e7);
+    
+    function set_bondSlippageBPS (uint _slippagebps) public onlyOwner {
+        bondSlippageBPS = _slippagebps;
     }
-
-    /// @dev bond redemption run; auto-stakes payout
-    function redeemBond() private returns ( uint redeemed ){
-        uint pendingPayout = IBondDepo ( MCO2BondContract )
-                            .pendingPayoutFor( address(this));
-        uint percentVested =  IBondDepo ( MCO2BondContract )
-                            .percentVestedFor( address(this));
-        //revert("We got up to line 615!");
-        if ((pendingPayout >= 1e9) && 
-            (percentVested >= minPercentToRedeem)
-            ){
-            redeemed = IBondDepo( MCO2BondContract ).redeem(
-                address(this),
-                false
-            );
-            stakeKlima();
-        }   
+    
+    function set_StdWdlBPS (uint _bps) public onlyOwner {
+        StdWdlBPS = _bps;
     }
-
-    function stakeKlima() private {
-        uint KlimaAmt = IERC20(KLIMA).balanceOf(address(this));
-        IERC20(KLIMA).approve(staking, KlimaAmt);
-        IStaking(staking).stake(KlimaAmt, address(this));
-        IStaking(staking).claim(address(this));
+    
+    function set_BPSToBond (uint _bps) public onlyOwner {
+        BPSToBond = _bps;
     }
-
-    /// @dev swaps USDC to MCO2
-    function swapToBondable( uint _USDCAmt ) private 
-                                        returns( uint MCO2Amt ) {
-        //comment out this transferFrom when not testing the swap.
-        //IERC20(USDC).transferFrom(msg.sender, address(this), USDAmt);
-        IUniswapV2Router02 UMRouter = IUniswapV2Router02(USDCMCO2Router);
-        IERC20(USDC).approve(USDCMCO2Router,
-                                        _USDCAmt
-                                        );
-        address token0 = IUniswapV2Pair(MCO2USDC).token0();
-        address token1 = IUniswapV2Pair(MCO2USDC).token1();
-
-        address[] memory path = new address[](2);
-        if (token0 == USDC) {
-                    path[0] = token0;
-                    path[1] = token1;
-        } else {
-                    path[1] = token0;
-                    path[0] = token1;
-        }
-
-        uint256[] memory minOut 
-                    = UMRouter.getAmountsOut(_USDCAmt,
-                                        path);
-        uint expectedAmt = minOut[minOut.length - 1];
-        
-        uint256[] memory amounts = UMRouter.swapExactTokensForTokens(
-                                    _USDCAmt,
-                                    //0,
-                                    (expectedAmt 
-                                        * (1000-MCO2USDCSlippage)) 
-                                            / 1000,
-                                    path,
-                                    address(this),
-                                    block.timestamp +10*5 
-                                        );
-        USDCBondReserve -= _USDCAmt;
-        MCO2Amt = amounts[amounts.length-1];   
+    
+    function set_minBPSToRedeem (uint _bps) public onlyOwner {
+        minBPSToRedeem = _bps;
     }
-
-    /// @dev deposits given MCO2 amount
-    function depositBond( uint _bondAmt) private returns ( uint bondPayout ){
-        uint MCO2Balance = IERC20(MCO2).balanceOf(address(this));
-        if (MCO2Balance < _bondAmt){
-            _bondAmt = MCO2Balance;
-        }
-        IERC20(MCO2).approve(MCO2BondContract,
-                                        _bondAmt //reserveToBond
-                                        );
-        bondPayout = IBondDepo( MCO2BondContract ).deposit(
-            _bondAmt,
-            (bondPrice * (1000+bondSlippage) )/ 1000,
-            address( this )
-        );
-        MCO2Reserve -= _bondAmt;
+    
+    function set_minBondDiscountBPS (uint _bps) public onlyOwner {
+        minBondDiscountBPS = _bps;
     }
 
     ///@dev Owner is able to withdraw sKLIMA if necessary.
@@ -321,7 +172,7 @@ contract KNS_Treasurer is Initializable, OwnableUpgradeable{
     }
 
     function withdrawRegularUSDC() external onlyOwner {
-        uint AllTimeWithdrawable = (CumulativeFreeUSDCReserves * StdWdlPcg) /1000;
+        uint AllTimeWithdrawable = (CumulativeFreeUSDCReserves * StdWdlBPS) /MAX_BPS;
         //subtract amount already withdrawn.
         uint toWithdraw = AllTimeWithdrawable -
                                     (CumulativeFreeUSDCReserves
@@ -334,7 +185,172 @@ contract KNS_Treasurer is Initializable, OwnableUpgradeable{
         IERC20(USDC).transfer(msg.sender, toWithdraw);
     }
 
+    // PUBLIC
+
+    function depositUSDC( uint _USDCAmt ) external {
+        IERC20(USDC).transferFrom(msg.sender, address(this), _USDCAmt);
+        rebalanceFunds();
+    }
+
+    ///@dev main logic of the conract: finds out how much excess USDC
+    ///@dev is in the contract and allocates it between USDC reserve and
+    ///@dev bonding.
+    function rebalanceFunds() public {
+        uint USDCExcess = IERC20(USDC).balanceOf(address(this))
+                            - FreeUSDCReserve
+                            - USDCBondReserve;
+        emit USDC_Received(USDCExcess);
+        if (USDCExcess > 1e7) {
+            FreeUSDCReserve += ( USDCExcess * (MAX_BPS-BPSToBond) ) / MAX_BPS;
+            CumulativeFreeUSDCReserves += ( USDCExcess * (MAX_BPS-BPSToBond) ) / MAX_BPS;
+            USDCBondReserve += (USDCExcess * BPSToBond) / MAX_BPS;
+        }
+        MCO2Reserve = IERC20(MCO2).balanceOf(address(this));
+        sKLIMAReserve = IERC20(sKLIMA).balanceOf(address(this));
+        uint KlimaAmt = IERC20(KLIMA).balanceOf(address(this));
+        if (KlimaAmt > 1e10 ){
+            stakeKlima();
+            sKLIMAReserve += KlimaAmt;
+            
+        }
+        bondingRun();
+    }
+
+    // PRIVATE
+
+    function bondingRun() private {
+        swapPrice = getSwapPrice();
+        bondPrice = getBondPrice();
+        if ( bondPrice > swapPrice ) {
+            bondDiscountBPS = 0;//don't bond if unfavourable discount
+        } else {
+            bondDiscountBPS = ((swapPrice - bondPrice) * MAX_BPS) / swapPrice;
+        }
+        if (bondDiscountBPS >= minBondDiscountBPS) {
+            sKLIMAReserve += redeemBond();
+            if(USDCBondReserve > 1e7){//if more than 10 USDC to bond...
+                MCO2Reserve += swapToBondable(USDCBondReserve);
+                nextKlimaPayout = depositBond(MCO2Reserve);
+            }
+        }
+    }
+
+    /// @dev gets swap price in MCO2 per KLIMA, 9 dec pts
+    function getSwapPrice() private view returns ( uint ) {
+        IUniswapV2Router02 KMRouter = IUniswapV2Router02(KLIMAMCO2Router);
+        address token0 = IUniswapV2Pair(KLIMAMCO2).token0();
+        address token1 = IUniswapV2Pair(KLIMAMCO2).token1();
+        address[] memory path = new address[](2);
+        if (token0 == KLIMA) {
+                    path[0] = token0;
+                    path[1] = token1;
+        } else {
+                    path[1] = token0;
+                    path[0] = token1;
+        }
+        uint256[] memory minOut 
+                    = KMRouter.getAmountsOut(1e9, path);
+        return minOut[minOut.length - 1];   
+    }
+
+    /// @dev gets bond price in MCO2 per KLIMA,9 dec pts
+    function getBondPrice() private returns ( uint ){
+        return (IBondDepo( MCO2BondContract )
+                                .bondPrice() * 1e7);
+    }
+
+    /// @dev bond redemption run; auto-stakes payout
+    function redeemBond() private returns ( uint redeemed ){
+        uint pendingPayout = IBondDepo ( MCO2BondContract )
+                            .pendingPayoutFor( address(this));
+        uint percentVested =  IBondDepo ( MCO2BondContract )
+                            .percentVestedFor( address(this));
+        //revert("We got up to line 615!");
+        if ((pendingPayout >= 1e9) && 
+            ((percentVested*100) >= minBPSToRedeem)
+            ){
+            redeemed = IBondDepo( MCO2BondContract ).redeem(
+                address(this),
+                false
+            );
+            stakeKlima();
+        }   
+    }
+
+    function stakeKlima() private {
+        uint KlimaAmt = IERC20(KLIMA).balanceOf(address(this));
+        IERC20(KLIMA).approve(staking, KlimaAmt);
+        IStaking(staking).stake(KlimaAmt, address(this));
+        IStaking(staking).claim(address(this));
+    }
+
+    /// @dev swaps USDC to MCO2
+    function swapToBondable( uint _USDCAmt ) private 
+                                        returns( uint MCO2Amt ) {
+        IUniswapV2Router02 UMRouter = IUniswapV2Router02(USDCMCO2Router);
+        IERC20(USDC).approve(USDCMCO2Router,
+                                        _USDCAmt
+                                        );
+        address token0 = IUniswapV2Pair(MCO2USDC).token0();
+        address token1 = IUniswapV2Pair(MCO2USDC).token1();
+
+        address[] memory path = new address[](2);
+        if (token0 == USDC) {
+                    path[0] = token0;
+                    path[1] = token1;
+        } else {
+                    path[1] = token0;
+                    path[0] = token1;
+        }
+
+        uint256[] memory minOut 
+                    = UMRouter.getAmountsOut(_USDCAmt,
+                                        path);
+        uint expectedAmt = minOut[minOut.length - 1];
+        
+        uint256[] memory amounts = UMRouter.swapExactTokensForTokens(
+                                    _USDCAmt,
+                                    (expectedAmt 
+                                        * (MAX_BPS-MCO2USDCSlippageBPS)) 
+                                            / MAX_BPS,
+                                    path,
+                                    address(this),
+                                    block.timestamp+10*5 
+                                        );
+        USDCBondReserve -= _USDCAmt;
+        MCO2Amt = amounts[amounts.length-1];   
+    }
+
+    /// @dev deposits MCO2 reserve
+    function depositBond( uint _bondAmt) private returns ( uint bondPayout ){
+        uint MCO2Balance = IERC20(MCO2).balanceOf(address(this));
+        if (MCO2Balance < _bondAmt){
+            _bondAmt = MCO2Balance;
+        }
+        IERC20(MCO2).approve(MCO2BondContract,
+                                        _bondAmt
+                                        );
+        bondPayout = IBondDepo( MCO2BondContract ).deposit(
+            _bondAmt,
+            (bondPrice * (MAX_BPS+bondSlippageBPS) )/ MAX_BPS,
+            address( this )
+        );
+        emit MCO2_Bonded(_bondAmt);
+        MCO2Reserve -= _bondAmt;
+    }
 
 
- 
+
+    // RECEIVE & FALLBACK
+
+    receive() external payable {
+        emit maticReceived(msg.sender, msg.value);   
+    }
+
+    fallback() external payable {
+        if (msg.value > 0){
+            emit maticReceived(msg.sender, msg.value);
+        }
+    }
+
 }
