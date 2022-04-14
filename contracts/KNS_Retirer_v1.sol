@@ -12,7 +12,6 @@ import "./interfaces/ITreasury.sol";
 import "./interfaces/IUniswapV2Pair.sol";
 import "./interfaces/IUniswapV2Router02.sol";
 
-
 // KNS Retirer retires 5% of mint price as BCT, wraps 5% into
 // auto-retirement KLIMA that retires 33% of any staking rewards
 // and is permanently locked in the contract, and transfers the
@@ -20,9 +19,8 @@ import "./interfaces/IUniswapV2Router02.sol";
 contract KNS_Retirer is Initializable, OwnableUpgradeable {
 
     // EVENTS
-    event maticReceived(address indexed _sender, uint value );
-    event BCT_retired( address indexed _beneficiary, uint BCTFromSwap );
-    event arKLIMAMinted( uint _value );
+    event maticReceived(address indexed _sender, uint _value);
+    event BCT_retired(address indexed _beneficiary, string _domain, uint _BCTFromSwap);
 
     // CONSTANTS
     uint public constant MAX_BPS = 10_000; // 10000 bps = 100%
@@ -40,29 +38,16 @@ contract KNS_Retirer is Initializable, OwnableUpgradeable {
     address public arKLIMA;
     address public treasurer;
     address public staking;
+
     string public retirementMessage;
+
     uint public slippageFactor; // 500 bps = 5%
     uint public retireBctBps; // 500 bps = 5%
     uint public stakeInKIbps; // 500 bps = 5%
     uint public bpsFundsReceived; // 7000 bps = 70%
-    uint public USDCFromSwap;
-    uint public KLIMAFromSwap;
-    uint public BCTFromSwap;
-    uint public amtLastStaked;
-    uint public amtLastWrapped;
-    uint public arKLIMABalance;
-    uint public totalBCTRetiredByKlimaNameService;
-    mapping ( address => uint ) public BCTRetiredByBeneficiaryAddress;
 
-
-    // PRIVATE STATE VARIABLES WITH PUBLIC VIEW FUNCTIONS
-
-    mapping ( string => uint ) private BCTRetiredByDomain;
-
-    function getBCTRetiredByDomain ( string memory _domain ) 
-                                            public view returns (uint) {
-        return BCTRetiredByDomain[_domain];
-    }
+    uint public totalBCTRetiredByKNS; // total BCT retired by KNS
+    mapping (string => uint) public BCTRetiredByDomain; // domainName => BCT amount 
 
     // INITIALIZER
 
@@ -91,7 +76,6 @@ contract KNS_Retirer is Initializable, OwnableUpgradeable {
         bpsFundsReceived = 7_000; // 7000 bps = 70%
     }
 
-
     // OWNER
 
     function set_Aggregator (address _aggregator) external onlyOwner {
@@ -113,21 +97,6 @@ contract KNS_Retirer is Initializable, OwnableUpgradeable {
     function set_BCTUSDC (address _pair) external onlyOwner {
         BCTUSDC = _pair;
     }
-    
-    /* Fixed token addresses should not be able to be changed
-
-    function set_USDC (address _token) external onlyOwner {
-        USDC = _token;
-    }
-    
-    function set_BCT (address _token) external onlyOwner {
-        BCT = _token;
-    }
-    
-    function set_KLIMA (address _token) external onlyOwner {
-        KLIMA = _token;
-    }
-    */
     
     function set_sKLIMA (address _token) external onlyOwner {
         sKLIMA = _token;
@@ -190,7 +159,7 @@ contract KNS_Retirer is Initializable, OwnableUpgradeable {
         address _beneficiary, 
         string memory _domainName,
         string memory _retMessage
-    ) public {
+    ) external {
         require(
             _USDCAmt >= 1*(10**6), 
             "Payment net of royalties and referrals is less than 1 USDC."
@@ -225,20 +194,20 @@ contract KNS_Retirer is Initializable, OwnableUpgradeable {
         string memory _domainName,
         string memory _retMessage
     ) private {
-        BCTFromSwap = _swapUSDCToBCT(_USDCAmt);
+        uint BCTFromSwap = _swapUSDCToBCT(_USDCAmt);
         IRetire KI_Retirer = IRetire(Aggregator);
         IERC20(BCT).approve(Aggregator, BCTFromSwap);
         KI_Retirer.retireCarbon(
-            BCT,
-            BCT,
-            BCTFromSwap,
-            false,
+            BCT, // _sourceToken
+            BCT, // _poolToken
+            BCTFromSwap, // _amount
+            true, // _amountInCarbon
             _beneficiary,
             _domainName,
             _retMessage
         );
-        emit BCT_retired( _beneficiary, BCTFromSwap );
-        _BCTRetirementAnalysis(_beneficiary, _domainName, BCTFromSwap);
+        emit BCT_retired(_beneficiary, _domainName, BCTFromSwap);
+        _BCTRetirementAnalysis(_domainName, BCTFromSwap);
     }
 
     function _swapUSDCToBCT(uint _USDCAmt) private returns (uint BCTAmt) {
@@ -271,24 +240,18 @@ contract KNS_Retirer is Initializable, OwnableUpgradeable {
     }
 
     //Provides granular BCT retirement analytics
-    function _BCTRetirementAnalysis( address _beneficiary, 
-                                    string memory _domainName, 
-                                    uint _BCTRetired ) private {      
-        totalBCTRetiredByKlimaNameService += _BCTRetired;
-        BCTRetiredByDomain[_domainName] += _BCTRetired;
-        BCTRetiredByBeneficiaryAddress[_beneficiary] += _BCTRetired;        
+    function _BCTRetirementAnalysis(string memory _domainName, uint _BCTRetired) private {      
+        totalBCTRetiredByKNS += _BCTRetired; // total BCT retired by KNS
+        BCTRetiredByDomain[_domainName] += _BCTRetired; // BCT retired per domain   
     }
-
 
     // Swaps USDC to Klima, stakes this, wraps this in auto-retirement KLIMA
     // (This version of auto-retirement KLIMA retires 33% of KLIMA emmissions)
     // and maintains a current balance of arKLIMA.
-    function stakeinKI( uint _USDCAmt) private {
-        KLIMAFromSwap = _swapUSDCToKlima(_USDCAmt);
-        amtLastStaked = _stakeKLIMA();
-        amtLastWrapped = _wrapArKLIMA();
-        arKLIMABalance += amtLastWrapped;
-        emit arKLIMAMinted(amtLastWrapped);
+    function stakeinKI(uint _USDCAmt) private {
+        _swapUSDCToKlima(_USDCAmt);
+        _stakeKLIMA();
+        _wrapArKLIMA();
     } 
 
     function _swapUSDCToKlima(uint _USDCAmt) private returns (uint KlimaAmt) {
