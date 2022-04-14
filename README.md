@@ -4,10 +4,18 @@ The key contracts located in this repository are the contracts to KNS_Retirer.so
 
 ## Running this project
 
+Please obtain an alchemy polygon mainnet api key. You will need
+to provide hardhat.config with an endpoint url nad the api key
+from a .env file that you populate with these values.
+
 Navigate to a suitable local directory
+
 git clone https://github.com/GwamiLabs/KlimaNameService-solidity
+
 npm i
+
 npx hardhat node
+
 npx hardhat run scripts/test-KNS-contracts.js
 
 ## Preamble - premise of project

@@ -2,8 +2,6 @@ const { ethers, run, upgrades } = require("hardhat");
 require('dotenv').config({path:__dirname+'../.env'});
 const ERC20ABI = require('./erc20.json');
 const SUSHIABI = require('./sushirouter.json');
-const KNS_RETABI = require('./KNS_Retirer.json');
-const KNS_TREASABI = require('./KNS_Treasurer.json');
 const ARKLIMA = "0x21A52488f9F339B5605Ec7196BdbcC5bf2D45a78";
 const USDC = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
 const sKLIMA = "0xb0C22d8D350C67420f06F48936654f567C73E8C8";
@@ -138,15 +136,12 @@ async function main() {
     //final tests of KNS_Retirer analytics
     console.log("Testing retirement analytics...");
 
-    domainRetirement = await retirer.getBCTRetiredByDomain("pplTestr");
-    addressRetirement = await retirer.BCTRetiredByBeneficiaryAddress(
-                                                        Address1.address);
-    totalRetirements = await retirer.totalBCTRetiredByKlimaNameService();
+    domainRetirement = await retirer.BCTRetiredByDomain("pplTestr");
+
+    totalRetirements = await retirer.totalBCTRetiredByKNS();
     
     console.log("domain Retirements of pplTestr: ", domainRetirement);
-    console.log("address Retirements of ",
-                Address1.address,
-                ": ", addressRetirement);
+
     console.log("total Retirements by Klima Name Service: ",
                   totalRetirements);
 
@@ -160,18 +155,13 @@ async function main() {
       "trees as integers"
     );
 
-    oldDomainRetirement = await retirer.getBCTRetiredByDomain("pplTestr");
-    newDomainRetirement = await retirer.getBCTRetiredByDomain("uintTestr");
-    addressRetirement = await retirer.BCTRetiredByBeneficiaryAddress(
-                                                        Address1.address);
-    totalRetirements = await retirer.totalBCTRetiredByKlimaNameService();
+    oldDomainRetirement = await retirer.BCTRetiredByDomain("pplTestr");
+    newDomainRetirement = await retirer.BCTRetiredByDomain("uintTestr");
+    totalRetirements = await retirer.totalBCTRetiredByKNS();
     
 
     console.log("domain Retirements of pplTestr: ", oldDomainRetirement);
     console.log("domain Retirements of uintTestr: ", newDomainRetirement);
-    console.log("address Retirements of ",
-                Address1.address,
-                ": ", addressRetirement);
     console.log("total Retirements by Klima Name Service: ",
                   totalRetirements);
 

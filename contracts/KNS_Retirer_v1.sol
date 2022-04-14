@@ -201,7 +201,7 @@ contract KNS_Retirer is Initializable, OwnableUpgradeable {
             BCT, // _sourceToken
             BCT, // _poolToken
             BCTFromSwap, // _amount
-            true, // _amountInCarbon
+            false, // _amountInCarbon
             _beneficiary,
             _domainName,
             _retMessage
