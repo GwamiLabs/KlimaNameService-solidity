@@ -2,6 +2,14 @@
 
 The key contracts located in this repository are the contracts to KNS_Retirer.sol, which manages stacking of carbon tonne retirement on mint of a Klima Name Service domain, and InitTreasury.sol.
 
+## Running this project
+
+Navigate to a suitable local directory
+git clone https://github.com/GwamiLabs/KlimaNameService-solidity
+npm i
+npx hardhat node
+npx hardhat run scripts/test-KNS-contracts.js
+
 ## Preamble - premise of project
 
 Product owner: GWAMI Labs

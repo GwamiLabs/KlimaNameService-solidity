@@ -21,7 +21,7 @@ contract KNS_Retirer is Initializable, OwnableUpgradeable {
 
     // EVENTS
     event maticReceived(address indexed _sender, uint value );
-    event USDCRetiredAsBCT( address indexed _beneficiary, uint value );
+    event BCT_retired( address indexed _beneficiary, uint BCTFromSwap );
     event arKLIMAMinted( uint _value );
 
     // CONSTANTS
@@ -30,7 +30,9 @@ contract KNS_Retirer is Initializable, OwnableUpgradeable {
     // STATE VARIABLES
     address public Aggregator;
     address public USDCKLIMARouter;
+    address public USDCBCTRouter;
     address public KLIMAUSDC;
+    address public BCTUSDC;
     address public USDC;
     address public BCT;
     address public KLIMA;
@@ -45,9 +47,22 @@ contract KNS_Retirer is Initializable, OwnableUpgradeable {
     uint public bpsFundsReceived; // 7000 bps = 70%
     uint public USDCFromSwap;
     uint public KLIMAFromSwap;
+    uint public BCTFromSwap;
     uint public amtLastStaked;
     uint public amtLastWrapped;
     uint public arKLIMABalance;
+    uint public totalBCTRetiredByKlimaNameService;
+    mapping ( address => uint ) public BCTRetiredByBeneficiaryAddress;
+
+
+    // PRIVATE STATE VARIABLES WITH PUBLIC VIEW FUNCTIONS
+
+    mapping ( string => uint ) private BCTRetiredByDomain;
+
+    function getBCTRetiredByDomain ( string memory _domain ) 
+                                            public view returns (uint) {
+        return BCTRetiredByDomain[_domain];
+    }
 
     // INITIALIZER
 
@@ -59,7 +74,9 @@ contract KNS_Retirer is Initializable, OwnableUpgradeable {
         __Ownable_init_unchained();
         Aggregator = 0xEde3bd57a04960E6469B70B4863cE1c9d9363Cb8;
         USDCKLIMARouter = 0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506;
+        USDCBCTRouter = 0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506;
         KLIMAUSDC = 0x5786b267d35F9D011c4750e0B0bA584E1fDbeAD1;
+        BCTUSDC = 0x1E67124681b402064CD0ABE8ed1B5c79D2e02f64;
         USDC = 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174;
         BCT = 0x2F800Db0fdb5223b3C3f354886d907A671414A7F;
         KLIMA = 0x4e78011Ce80ee02d2c3e649Fb657E45898257815;
@@ -74,6 +91,7 @@ contract KNS_Retirer is Initializable, OwnableUpgradeable {
         bpsFundsReceived = 7_000; // 7000 bps = 70%
     }
 
+
     // OWNER
 
     function set_Aggregator (address _aggregator) external onlyOwner {
@@ -83,9 +101,17 @@ contract KNS_Retirer is Initializable, OwnableUpgradeable {
     function set_USDCKLIMARouter (address _router) external onlyOwner {
         USDCKLIMARouter = _router;
     }
+
+    function set_USDCBCTRouter (address _router) external onlyOwner {
+        USDCBCTRouter = _router;
+    }
     
     function set_KLIMAUSDC (address _pair) external onlyOwner {
         KLIMAUSDC = _pair;
+    }
+
+    function set_BCTUSDC (address _pair) external onlyOwner {
+        BCTUSDC = _pair;
     }
     
     /* Fixed token addresses should not be able to be changed
@@ -194,24 +220,65 @@ contract KNS_Retirer is Initializable, OwnableUpgradeable {
 
     //Retires BCT via Klima DAO's Klima Infinity retirement aggregator.
     function retireBCT(
-        uint _retireAmt, 
+        uint _USDCAmt, 
         address _beneficiary, 
         string memory _domainName,
         string memory _retMessage
     ) private {
+        BCTFromSwap = _swapUSDCToBCT(_USDCAmt);
         IRetire KI_Retirer = IRetire(Aggregator);
-        IERC20(USDC).approve(Aggregator, _retireAmt);
+        IERC20(BCT).approve(Aggregator, BCTFromSwap);
         KI_Retirer.retireCarbon(
-            USDC,
             BCT,
-            _retireAmt,
+            BCT,
+            BCTFromSwap,
             false,
             _beneficiary,
             _domainName,
             _retMessage
         );
-        emit USDCRetiredAsBCT( _beneficiary, _retireAmt );
+        emit BCT_retired( _beneficiary, BCTFromSwap );
+        _BCTRetirementAnalysis(_beneficiary, _domainName, BCTFromSwap);
     }
+
+    function _swapUSDCToBCT(uint _USDCAmt) private returns (uint BCTAmt) {
+        IERC20(USDC).approve(USDCBCTRouter, _USDCAmt);
+        IUniswapV2Router02 UBRouter = IUniswapV2Router02(USDCBCTRouter);
+        address token0 = IUniswapV2Pair(BCTUSDC).token0();
+        address token1 = IUniswapV2Pair(BCTUSDC).token1();
+
+        address[] memory path = new address[](2);
+        if (token0 == USDC) {
+                    path[0] = token0;
+                    path[1] = token1;
+        } else {
+                    path[1] = token0;
+                    path[0] = token1;
+        }
+
+        uint256[] memory minOut = UBRouter.getAmountsOut(_USDCAmt, path);
+        
+        uint[] memory amounts = UBRouter.swapExactTokensForTokens(
+                                    _USDCAmt,
+                                    (minOut[1]*(MAX_BPS-slippageFactor))/MAX_BPS,
+                                    path,
+                                    address(this),
+                                    block.timestamp 
+                                );
+        
+        BCTAmt = amounts[amounts.length-1];
+        require(BCTAmt > 0, "Didn't process swap to BCT properly");
+    }
+
+    //Provides granular BCT retirement analytics
+    function _BCTRetirementAnalysis( address _beneficiary, 
+                                    string memory _domainName, 
+                                    uint _BCTRetired ) private {      
+        totalBCTRetiredByKlimaNameService += _BCTRetired;
+        BCTRetiredByDomain[_domainName] += _BCTRetired;
+        BCTRetiredByBeneficiaryAddress[_beneficiary] += _BCTRetired;        
+    }
+
 
     // Swaps USDC to Klima, stakes this, wraps this in auto-retirement KLIMA
     // (This version of auto-retirement KLIMA retires 33% of KLIMA emmissions)

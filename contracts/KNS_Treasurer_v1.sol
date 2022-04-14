@@ -14,14 +14,17 @@ import "./interfaces/IBondDepo.sol";
 contract KNS_Treasurer is Initializable, OwnableUpgradeable{
 
     //EVENTS
+    
     event maticReceived( address indexed _sender, uint value );
     event USDC_Received( uint value );
     event MCO2_Bonded( uint value );
 
     //CONSTANTS
+
     uint public constant MAX_BPS = 10_000; // 10000 bps = 100%
 
     //STATE VARIABLES
+
     address public KLIMAMCO2Router;
     address public USDCMCO2Router;
     address public KLIMAMCO2;
@@ -208,7 +211,7 @@ contract KNS_Treasurer is Initializable, OwnableUpgradeable{
         MCO2Reserve = IERC20(MCO2).balanceOf(address(this));
         sKLIMAReserve = IERC20(sKLIMA).balanceOf(address(this));
         uint KlimaAmt = IERC20(KLIMA).balanceOf(address(this));
-        if (KlimaAmt > 1e10 ){
+        if (KlimaAmt > 1e10 ){ //if more than 10 KLIMA
             stakeKlima();
             sKLIMAReserve += KlimaAmt;
             
